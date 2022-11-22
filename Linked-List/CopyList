@@ -1,0 +1,93 @@
+/**
+
+Problem Description
+A linked list A is given such that each node contains an additional random pointer which could point to any node in the list or NULL.
+
+Return a deep copy of the list.
+
+
+
+Problem Constraints
+0 <= |A| <= 106
+
+
+
+Input Format
+The first argument of input contains a pointer to the head of linked list A.
+
+
+
+Output Format
+Return a pointer to the head of the required linked list.
+
+
+
+Example Input
+Given list
+   1 -> 2 -> 3
+with random pointers going from
+  1 -> 3
+  2 -> 1
+  3 -> 1
+  
+
+
+Example Output
+   1 -> 2 -> 3
+with random pointers going from
+  1 -> 3
+  2 -> 1
+  3 -> 1
+  
+
+
+Example Explanation
+You should return a deep copy of the list. The returned answer should not contain the same node as the original list, but a copy of them. The pointers in the returned list should not link to any node in the original input list.
+
+**/
+
+/**
+ * Definition for singly-linked list with a random pointer.
+ * class RandomListNode {
+ *     int label;
+ *     RandomListNode next, random;
+ *     RandomListNode(int x) { this.label = x; }
+ * };
+ */
+public class Solution {
+    public RandomListNode copyRandomList(RandomListNode head) {
+        makeCopy(head);
+        creatRandomNodes(head);
+        return extractCopy(head);
+    }
+    public void makeCopy(RandomListNode head) {
+        RandomListNode curr = head;
+        while(curr!=null) {
+            RandomListNode copy = new RandomListNode(curr.label);
+            copy.next = curr.next;
+            curr.next = copy;
+            curr = curr.next.next;
+        }
+    }
+    public void creatRandomNodes(RandomListNode head) {
+        RandomListNode curr = head;
+        while(curr!=null) {
+            if(curr.random!=null) {
+                curr.next.random = curr.random.next;
+            }
+            curr = curr.next.next;
+        }
+    }
+    public RandomListNode extractCopy(RandomListNode head) {
+        RandomListNode dummy = new RandomListNode(0);
+        RandomListNode prev = dummy;
+        RandomListNode curr = head;
+        while(curr!=null) {
+            prev.next = curr.next;
+            prev = prev.next;
+            curr.next = prev.next;
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+}
